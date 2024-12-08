@@ -13,9 +13,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          lfs: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -32,24 +29,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          lfs: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Get next version
         uses: reecetech/version-increment@2024.10.1
         id: version
         with:
           scheme: semver
           increment: patch
-
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
