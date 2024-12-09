@@ -1,5 +1,5 @@
 name: pipeline
-run-name: ${{ github.actor }} is CI/CD out GitHub Actions 🚀
+run-name: ${{ github.actor }} is running CI/CD out Github Actions 🚀
 
 on:
  push:
