@@ -1,4 +1,6 @@
 name: pipeline
+run-name: ${{ github.actor }} is CI/CD out GitHub Actions 🚀
+
 on:
  push:
    branches:
