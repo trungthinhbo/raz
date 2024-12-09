@@ -2,12 +2,10 @@ name: pipeline
 run-name: ${{ github.actor }} is running CI/CD out Github Actions 🚀
 
 on:
- push:
-   branches:
-     - "main"
-
-permissions:
-  packages: write
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   run-tests:
