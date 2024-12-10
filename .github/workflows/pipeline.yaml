@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  packages: write
+
 jobs:
   run-tests:
     runs-on: ubuntu-latest
@@ -52,7 +55,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: false
+          push: true
           tags: |
             ghcr.io/trungthinhbo/raz:latest
             ghcr.io/trungthinhbo/raz:${{ steps.versioning.outputs.version }}
