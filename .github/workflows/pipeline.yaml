@@ -54,5 +54,5 @@ jobs:
           context: .
           push: true
           tags: |
-            trungthinhbo/raz:latest
-            trungthinhbo/raz:${{ steps.versioning.outputs.version }}
+            ghcr.io/trungthinhbo/raz:latest
+            ghcr.io/trungthinhbo/raz:${{ steps.versioning.outputs.version }}
