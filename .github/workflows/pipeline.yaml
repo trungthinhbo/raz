@@ -41,11 +41,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🎯 Get next version
-        uses: reecetech/version-increment@2024.10.1
-        id: version-via-api
+        uses: MCKanpolat/auto-semver-action@v2
+        id: versioning
         with:
-          scheme: 'calver'
-          use_api: true
+          releaseType: patch 
+          incrementPerCommit: false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🎯 Build and push Docker image
         uses: docker/build-push-action@v6
@@ -54,4 +55,4 @@ jobs:
           push: true
           tags: |
             trungthinhbo/raz:latest
-            trungthinhbo/raz:${{ steps.version.outputs.version }}
+            trungthinhbo/raz:${{ steps.versioning.outputs.version }}
