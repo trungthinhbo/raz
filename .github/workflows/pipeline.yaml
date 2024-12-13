@@ -12,6 +12,7 @@ permissions: write-all
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+
     steps:
       - name: 🎯 Checkout repository
         uses: actions/checkout@v4
@@ -29,8 +30,10 @@ jobs:
 
   build-and-push-image:
     runs-on: ubuntu-latest
+
     needs:
       - run-tests
+
     steps:
       - name: 🎯 Checkout repository
         uses: actions/checkout@v4
@@ -50,3 +53,31 @@ jobs:
           tags: |
             ghcr.io/trungthinhbo/raz:latest
             ghcr.io/trungthinhbo/raz:${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs:
+      - build-and-push-image
+
+    steps:
+    - name: 🎯 Checkout code
+      uses: actions/checkout@v2
+
+    - name: 🎯 Create env file
+      run: |
+        echo "GIT_COMMIT_HASH=${{ github.sha }}" >> ./envfile
+        echo "APP_HOST=${{ secrets.APP_HOST }}" >> ./envfile
+        echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ./envfile
+        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ./envfile
+        echo "POSTGRES_SSLMODE=${{ secrets.POSTGRES_SSLMODE }}" >> ./envfile
+
+    - name: 🎯 Docker Stack deploy
+      uses: cssnr/stack-deploy-action@v1
+      with:
+        name: raz
+        file: docker-stack.yaml
+        host: ${{ secrets.APP_HOST }}
+        user: deploy
+        ssh_key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+        env_file: ./envfile

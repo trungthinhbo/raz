@@ -6,7 +6,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=contact@raz.io.vn"
+      - "--certificatesresolvers.myresolver.acme.email=trungthinh.bo@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
@@ -29,34 +29,35 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.web.loadbalancer.server.port=8080"
-      - "traefik.http.routers.web.rule=Host(`raz.io.vn`)"
+      - "traefik.http.routers.web.rule=Host(${APP_HOST})"
       - "traefik.http.routers.web.entrypoints=websecure"
       - "traefik.http.routers.web.tls.certresolver=myresolver"
     secrets:
       - db-password
     environment:
       - POSTGRES_HOST=db
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=app
+      - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_PORT=5432
-      - POSTGRES_SSLMODE=disable
+      - POSTGRES_SSLMODE=${POSTGRES_SSLMODE}
     deploy:
+      replicas: 3
       update_config:
         order: start-first
     depends_on:
       - db
 
   db:
-    image: postgres
+    image: postgres:17.2-alpine
     user: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
     secrets:
       - db-password
     environment:
-      - POSTGRES_DB=app
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
@@ -66,7 +67,3 @@ services:
 volumes:
   db-data:
   letsencrypt:
-
-secrets:
-  db-password:
-    external: true
