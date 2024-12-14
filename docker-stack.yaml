@@ -27,10 +27,11 @@ services:
   web:
     build:
       context: .
+      dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.web.loadbalancer.server.port=8080"
-      - "traefik.http.routers.web.rule=Host(${APP_HOST})"
+      - "traefik.http.routers.web.rule=Host(`${APP_HOST}`)"
       - "traefik.http.routers.web.entrypoints=websecure"
       - "traefik.http.routers.web.tls.certresolver=myresolver"
     environment:
