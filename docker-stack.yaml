@@ -25,9 +25,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/trungthinhbo/raz:${GIT_COMMIT_HASH:-latest}
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.web.loadbalancer.server.port=8080"

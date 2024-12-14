@@ -28,11 +28,37 @@ jobs:
       - name: 🎯 Test with the Go CLI
         run: go test ./...
 
-  deploy:
+  build-and-push-image:
     runs-on: ubuntu-latest
 
     needs:
       - run-tests
+
+    steps:
+      - name: 🎯 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🎯 Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🎯 Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/trungthinhbo/raz:latest
+            ghcr.io/trungthinhbo/raz:${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs:
+      - build-and-push-image
 
     steps:
     - name: 🎯 Checkout code
