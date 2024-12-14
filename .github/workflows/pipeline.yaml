@@ -72,8 +72,12 @@ jobs:
         echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ./envfile
         echo "POSTGRES_SSLMODE=${{ secrets.POSTGRES_SSLMODE }}" >> ./envfile
 
-    - name: 🎯 Authenticate to GitHub Container Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: 🎯 Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: https://ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: 🎯 Docker Stack deploy
       uses: cssnr/stack-deploy-action@v1
