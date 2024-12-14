@@ -40,6 +40,7 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_SSLMODE=${POSTGRES_SSLMODE}
     deploy:
+      replicas: 3
       update_config:
         order: start-first
     depends_on:
